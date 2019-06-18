@@ -8,6 +8,9 @@ import { map } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 import { User } from './user.model';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { Store } from '@ngrx/store';
+import { AppState } from '../app.reducer';
+import { ActivarLoadingAction, DesactivarLoadingAction } from '../shared/ui.accions';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +19,8 @@ export class AuthService {
 
   constructor(private afAuth: AngularFireAuth,
               private afDB: AngularFirestore,
-              private router: Router) { }
+              private router: Router,
+              private store: Store<AppState>) { }
 
   initAuthListener() {
     this.afAuth.authState.subscribe((fbUser: firebase.User) => {
@@ -38,6 +42,9 @@ export class AuthService {
   }
 
   crearUsuario(nombre: string, email: string, password: string) {
+
+    this.initLoading();
+
     this.afAuth.auth
       .createUserWithEmailAndPassword(email, password)
       .then( resp => {
@@ -54,10 +61,13 @@ export class AuthService {
       .catch( error => {
         console.error(error);
         Swal.fire('Error en el login', error.message, 'error');
-      });
+      }).finally(() => this.finishLoading());
   }
 
   login(email: string, password: string) {
+
+    this.initLoading();
+
     this.afAuth.auth
       .signInWithEmailAndPassword(email, password)
       .then( user => {
@@ -66,11 +76,19 @@ export class AuthService {
       }).catch(error => {
         console.log(error);
         Swal.fire('Error en el login', error.message, 'error');
-      });
+      }).finally(() => this.finishLoading());
   }
 
   logout() {
     this.router.navigate(['/login']);
     this.afAuth.auth.signOut();
+  }
+
+  initLoading() {
+    this.store.dispatch(new ActivarLoadingAction());
+  }
+
+  finishLoading() {
+    this.store.dispatch(new DesactivarLoadingAction());
   }
 }
