@@ -10,9 +10,9 @@ import { User } from './user.model';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Store } from '@ngrx/store';
 import { AppState } from '../app.reducer';
-import { ActivarLoadingAction, DesactivarLoadingAction } from '../shared/ui.accions';
 import { SetUserAction } from './auth.actions';
 import { Subscription } from 'rxjs';
+import { LoadingService } from '../shared/loading.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,11 +20,13 @@ import { Subscription } from 'rxjs';
 export class AuthService {
 
   private userSubscription: Subscription = new Subscription();
+  private usuario: User;
 
   constructor(private afAuth: AngularFireAuth,
               private afDB: AngularFirestore,
               private router: Router,
-              private store: Store<AppState>) { }
+              private store: Store<AppState>,
+              private loadingService: LoadingService) { }
 
   initAuthListener() {
     this.afAuth.authState.subscribe((fbUser: firebase.User) => {
@@ -34,8 +36,10 @@ export class AuthService {
             .subscribe( (usuarioObj: any) => {
               const newUser = new User(usuarioObj);
               this.store.dispatch(new SetUserAction(newUser));
+              this.usuario = newUser;
             });
       } else {
+        this.usuario = null;
         this.userSubscription.unsubscribe();
       }
     });
@@ -56,7 +60,7 @@ export class AuthService {
 
   crearUsuario(nombre: string, email: string, password: string) {
 
-    this.initLoading();
+    this.loadingService.initLoading();
 
     this.afAuth.auth
       .createUserWithEmailAndPassword(email, password)
@@ -74,12 +78,12 @@ export class AuthService {
       .catch( error => {
         console.error(error);
         Swal.fire('Error en el login', error.message, 'error');
-      }).finally(() => this.finishLoading());
+      }).finally(() => this.loadingService.finishLoading());
   }
 
   login(email: string, password: string) {
 
-    this.initLoading();
+    this.loadingService.initLoading();
 
     this.afAuth.auth
       .signInWithEmailAndPassword(email, password)
@@ -89,7 +93,7 @@ export class AuthService {
       }).catch(error => {
         console.log(error);
         Swal.fire('Error en el login', error.message, 'error');
-      }).finally(() => this.finishLoading());
+      }).finally(() => this.loadingService.finishLoading());
   }
 
   logout() {
@@ -97,11 +101,7 @@ export class AuthService {
     this.afAuth.auth.signOut();
   }
 
-  initLoading() {
-    this.store.dispatch(new ActivarLoadingAction());
-  }
-
-  finishLoading() {
-    this.store.dispatch(new DesactivarLoadingAction());
+  getUsuario() {
+    return {...this.usuario};
   }
 }
