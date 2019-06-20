@@ -4,7 +4,7 @@ import { IngresoEgreso } from './ingreso-egreso.model';
 import { IngresoEgresoService } from './ingreso-egreso.service';
 
 import Swal from 'sweetalert2';
-import { LoadingService } from '../shared/loading.service';
+import { LoadingService } from '../shared/services/loading.service';
 import { Subscription } from 'rxjs';
 import { AppState } from '../app.reducer';
 import { Store } from '@ngrx/store';

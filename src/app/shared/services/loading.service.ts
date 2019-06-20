@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { AppState } from '../app.reducer';
-import { ActivarLoadingAction, DesactivarLoadingAction } from './ui.accions';
+import { AppState } from '../../app.reducer';
+import { ActivarLoadingAction, DesactivarLoadingAction } from '../ui.accions';
 
 @Injectable({
   providedIn: 'root'

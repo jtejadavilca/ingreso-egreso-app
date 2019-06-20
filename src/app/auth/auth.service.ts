@@ -12,7 +12,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../app.reducer';
 import { SetUserAction } from './auth.actions';
 import { Subscription } from 'rxjs';
-import { LoadingService } from '../shared/loading.service';
+import { LoadingService } from '../shared/services/loading.service';
 
 @Injectable({
   providedIn: 'root'
