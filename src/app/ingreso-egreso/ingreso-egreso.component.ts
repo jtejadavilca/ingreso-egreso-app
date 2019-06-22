@@ -6,8 +6,9 @@ import { IngresoEgresoService } from './ingreso-egreso.service';
 import Swal from 'sweetalert2';
 import { LoadingService } from '../shared/services/loading.service';
 import { Subscription } from 'rxjs';
-import { AppState } from '../app.reducer';
 import { Store } from '@ngrx/store';
+
+import * as fromIngresoEgreso from './ingreso-egreso.reducer';
 
 @Component({
   selector: 'app-ingreso-egreso',
@@ -24,7 +25,7 @@ export class IngresoEgresoComponent implements OnInit, OnDestroy {
 
   constructor( public ingresoEgresoService: IngresoEgresoService,
                public loadingService: LoadingService,
-               public store: Store<AppState>) {
+               public store: Store<fromIngresoEgreso.AppState>) {
     this.tipo = 'ingreso';
   }
 

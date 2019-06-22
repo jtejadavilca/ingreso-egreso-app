@@ -7,7 +7,7 @@ export interface IngresoEgresoState {
 }
 
 export interface AppState extends AppState {
-    ingresoEgreso: IngresoEgreso;
+    ingresoEgreso: IngresoEgresoState;
 }
 
 const estadoInicial: IngresoEgresoState = {
